@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.idea_manager"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.viewmodel.android)
     val room_version = "2.7.0"
 
     implementation(libs.androidx.core.ktx)
