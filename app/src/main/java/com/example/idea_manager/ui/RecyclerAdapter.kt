@@ -7,7 +7,12 @@ import com.example.idea_manager.TaskClickListener
 import com.example.idea_manager.databinding.ListRowBinding
 import com.example.idea_manager.model.Task
 
-class RecyclerAdapter(private val taskList: List<Task>, private val clickListener: TaskClickListener) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+class RecyclerAdapter(
+    initialTasks: List<Task>, // Changed parameter name for clarity
+    private val clickListener: TaskClickListener
+) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+    private var taskList: MutableList<Task> = initialTasks.toMutableList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ListRowBinding.inflate(
@@ -32,6 +37,12 @@ class RecyclerAdapter(private val taskList: List<Task>, private val clickListene
         holder.editButton.setOnClickListener {
             (holder.itemView.context as TaskClickListener).onTaskEditClick(taskList[position])
         }
+    }
+
+    fun submitList(newTasks: List<Task>) {
+        taskList.clear()
+        taskList.addAll(newTasks)
+        notifyDataSetChanged()
     }
 
     class ViewHolder(binding: ListRowBinding) : RecyclerView.ViewHolder(binding.root) {

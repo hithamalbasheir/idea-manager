@@ -36,9 +36,15 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize RecyclerView and Adapter
+        recyclerView = binding.contentMain.taskRecyclerView // Assuming content_main is the id of the include layout
+        adapter = RecyclerAdapter(emptyList(), this)
+        recyclerView.adapter = adapter
+
+        loadTasks()
+
         setSupportActionBar(binding.toolbar)
 
-        val repository = TaskRepository(TaskDatabase.getDatabase(this).taskDao())
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
@@ -47,10 +53,9 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
     }
 
     fun loadTasks() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val tasks = viewModel.getAllTasks()
-            lifecycleScope.launch(Dispatchers.Main) {
-                recyclerView.adapter = RecyclerAdapter()
+        lifecycleScope.launch {
+            viewModel.getAllTasks().collect { tasksList ->
+                adapter.submitList(tasksList)
             }
         }
     }
